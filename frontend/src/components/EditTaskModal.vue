@@ -1,14 +1,16 @@
 <template>
-    <b-modal v-model="show" title="Edit Task" hide-footer class="text-white-50">
+    <b-modal v-model="show" centered title="Edit Task" :header-bg-variant="isDarkMode ? 'dark' : 'light'"
+        :header-text-variant="isDarkMode ? 'light' : 'dark'" :body-bg-variant="isDarkMode ? 'dark' : 'light'"
+        :body-text-variant="isDarkMode ? 'light' : 'dark'" :footer-bg-variant="isDarkMode ? 'dark' : 'light'"
+        :footer-text-variant="isDarkMode ? 'light' : 'dark'" @ok="handleEditTask" ok-title="Save" ok-variant="success">
         <b-form @submit.prevent="handleEditTask">
             <b-form-group label="Task" label-for="task-input">
-                <b-form-input id="task-input" type="text" class="form-control bg-transparent border border-secondary text-white"
-                    v-model="editedTaskText" required></b-form-input>
+                <b-form-input id="task-input" type="text" :class="{
+        'form-control bg-transparent border border-secondary': true,
+        'text-white': isDarkMode,
+        'text-dark': !isDarkMode
+    }" v-model="editedTaskText" required></b-form-input>
             </b-form-group>
-            <template #modal-footer>
-                <b-button variant="secondary" @click="closeModal">Cancel</b-button>
-                <b-button variant="primary" type="submit">Save changes</b-button>
-            </template>
         </b-form>
     </b-modal>
 </template>
@@ -19,6 +21,10 @@ export default {
     props: {
         task: {
             type: Object,
+            required: true
+        },
+        isDarkMode: {
+            type: Boolean,
             required: true
         }
     },
@@ -53,41 +59,11 @@ export default {
 </script>
 
 <style>
-.modal-content {
-    background-color: #1b1b1b !important;
-}
-
 .modal-header {
     border-bottom: 0 !important;
 }
 
-.btn-close {
-  position: relative;
-  width: 1.25rem; /* Adjust size as needed */
-  height: 1.25rem; /* Adjust size as needed */
-  background: transparent;
-  border: none;
-  cursor: pointer;
+.modal-footer {
+    border-top: 0 !important;
 }
-
-.btn-close::before,
-.btn-close::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 70%;
-  height: 2px;
-  background-color: #ffffff80; /* Color of the cross lines */
-  transform: translate(-50%, -50%);
-}
-
-.btn-close::before {
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-
-.btn-close::after {
-  transform: translate(-50%, -50%) rotate(-45deg);
-}
-
 </style>
