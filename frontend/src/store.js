@@ -6,19 +6,30 @@ const store = createStore({
     return {
       tasks: [
         { id: 1, text: 'Task 1', completed: false },
-        { id: 2, text: 'Task 2', completed: false },
+        { id: 2, text: 'Task 2', completed: true },
         { id: 3, text: 'Task 3', completed: false }
       ]
     };
   },
   mutations: {
-    addTask(state, task) {
-      state.tasks.push(task);
-    },
     toggleTask(state, taskId) {
       const task = state.tasks.find(task => task.id === taskId);
       if (task) {
         task.completed = !task.completed;
+      }
+    },
+    addTask(state, taskText) {
+      const newTask = {
+        id: state.tasks.length + 1,
+        text: taskText,
+        completed: false
+      };
+      state.tasks.push(newTask);
+    },
+    editTask(state, editedTask) {
+      const index = state.tasks.findIndex(task => task.id === editedTask.id);
+      if (index !== -1) {
+        state.tasks[index] = editedTask;
       }
     },
     removeTask(state, taskId) {
@@ -26,19 +37,17 @@ const store = createStore({
     }
   },
   actions: {
-    addTask({ commit }, task) {
-      commit('addTask', task);
-    },
     toggleTask({ commit }, taskId) {
       commit('toggleTask', taskId);
     },
+    createTask({ commit }, taskText) {
+      commit('addTask', taskText);
+    },
+    editTask({ commit }, editedTask) {
+      commit('editTask', editedTask);
+    },
     removeTask({ commit }, taskId) {
       commit('removeTask', taskId);
-    }
-  },
-  getters: {
-    tasks(state) {
-      return state.tasks;
     }
   }
 });

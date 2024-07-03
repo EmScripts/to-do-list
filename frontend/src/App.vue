@@ -9,12 +9,18 @@
         <h5 class="fw-light text-muted">Keep it up!</h5>
       </div>
       <div class="counter-circle bg-success text-center">
-        <span>{{ tasks.filter(task => !task.completed).length }}/{{ tasks.length }}</span>
+        <span>{{ completedTasks }}/{{ totalTasks }}</span>
       </div>
     </div>
     <div class="task-input-group d-flex mb-4 w-100">
-      <input v-model="newTaskText" type="text" class="form-control bg-dark text-white border-dark" placeholder="write your next task">
-      <button @click="handleAddTask" class="btn btn-success ms-2"><i data-feather="plus" width="24" height="24"></i></button>
+      <input 
+        type="text" 
+        class="form-control bg-dark border-dark text-white" 
+        placeholder="write your next task" 
+        v-model="newTaskText" 
+        @keyup.enter="addTask"
+      >
+      <button class="btn btn-success ms-2" @click="addTask"><i data-feather="plus"></i></button>
     </div>
     <div class="task-list w-100">
       <TaskItem
@@ -22,6 +28,7 @@
         :key="task.id"
         :task="task"
         @toggleTask="toggleTask"
+        @editTask="editTask"
         @removeTask="removeTask"
       />
     </div>
@@ -29,10 +36,9 @@
 </template>
 
 <script>
-import './assets/main.css';
+import { mapState, mapActions } from 'vuex';
 import feather from 'feather-icons';
 import TaskItem from './components/TaskItem.vue';
-import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'App',
@@ -45,18 +51,19 @@ export default {
     };
   },
   computed: {
-    ...mapState(['tasks'])
+    ...mapState(['tasks']),
+    completedTasks() {
+      return this.tasks.filter(task => task.completed).length;
+    },
+    totalTasks() {
+      return this.tasks.length;
+    }
   },
   methods: {
-    ...mapActions(['addTask', 'toggleTask', 'removeTask']),
-    handleAddTask() { // Renamed to avoid conflict
-      if (this.newTaskText.trim()) {
-        const newTask = {
-          id: Date.now(),
-          text: this.newTaskText,
-          completed: false
-        };
-        this.addTask(newTask);
+    ...mapActions(['toggleTask', 'createTask', 'editTask', 'removeTask']),
+    addTask() {
+      if (this.newTaskText.trim() !== '') {
+        this.createTask(this.newTaskText);  // Call the renamed Vuex action
         this.newTaskText = '';
       }
     }
@@ -71,28 +78,6 @@ export default {
 </script>
 
 <style scoped>
-.max-w-600 {
-  max-width: 600px;
-}
-
-.task-counter {
-  text-align: center;
-  width: 100%;
-  max-width: 400px;
-  border: 2px solid #fff;
-  border-radius: 10px;
-}
-
-.counter-circle {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  line-height: 80px;
-  color: white;
-  font-size: 1.5rem;
-  margin: 0 auto;
-}
-
 .task-input-group {
   max-width: 400px;
 }
@@ -101,7 +86,4 @@ export default {
   max-width: 400px;
 }
 
-.task-actions .btn {
-  border-color: transparent;
-}
 </style>

@@ -1,17 +1,37 @@
 <template>
-    <div class="border border-secondary bg-dark d-flex align-items-center justify-content-between p-2 mb-2 rounded">
-      <div class="d-flex align-items-center">
-        <input type="checkbox" class="form-check-input bg-dark border border-2 border-success me-2" :checked="task.completed" @change="toggleTask(task.id)">
-        <span :class="{ 'fw-bold': !task.completed, 'text-white-50': task.completed, 'text-decoration-line-through': task.completed }">{{ task.text }}</span>
-      </div>
-      <div class="task-actions">
-        <button class="btn btn-outline-secondary btn-sm me-1" @click="openEditModal"><i data-feather="edit-2"></i></button>
-        <button class="btn btn-outline-secondary btn-sm" @click="removeTask(task.id)"><i data-feather="trash-2"></i></button>
-      </div>
-  
+    <b-card no-body class="bg-dark text-light mb-3 border-secondary p-2">
+      <b-row align-v="center">
+        <b-col cols="auto">
+          <b-form-checkbox
+          class="bg-dark border border-2 border-success"
+            :checked="task.completed"
+            @change="toggleTask(task.id)"
+          ></b-form-checkbox>
+        </b-col>
+        <b-col>
+          <span
+            :class="{
+              'fw-bold': !task.completed,
+              'text-white-50 text-decoration-line-through': task.completed,
+            }"
+          >
+            {{ task.text }}
+          </span>
+        </b-col>
+        <b-col cols="auto" class="text-end">
+          <b-button-group size="sm">
+            <b-button variant="outline-secondary" class="border-0" @click="openEditModal">
+              <i data-feather="edit-2"></i>
+            </b-button>
+            <b-button variant="outline-secondary" class="border-0" @click="removeTask(task.id)">
+              <i data-feather="trash-2"></i>
+            </b-button>
+          </b-button-group>
+        </b-col>
+      </b-row>
       <!-- Edit Task Modal -->
       <EditTaskModal :task="task" @editTask="editTask" ref="editTaskModal"></EditTaskModal>
-    </div>
+    </b-card>
   </template>
   
   <script>
@@ -54,8 +74,5 @@
   
   <style scoped>
   /* Scoped styles specific to this component */
-  .task-actions .btn {
-    border-color: transparent;
-  }
   </style>
   
